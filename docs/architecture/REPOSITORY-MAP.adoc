@@ -209,6 +209,7 @@ your own repo - but do not read their emptiness as neglect here.
 
 [cols="1"]
 |===
+| `.machine_readable/ai/`
 | `.machine_readable/bot_directives/`
 | `.machine_readable/descriptiles/anchors/`
 | `.machine_readable/scripts/verification/`

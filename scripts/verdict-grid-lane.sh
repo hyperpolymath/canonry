@@ -6,7 +6,9 @@
 #
 # Policy: metadatastician/standards docs/VERDICT-GRID-SPEC.adoc (a findings
 # lane has one row per reporter: Hypatia, panic-attack, pons asinorum and every
-# gitbot-fleet member the repository enrols). The renderer itself is NOT copied
+# gitbot-fleet member the repository enrols). Here the panic-attack row is fed a
+# `not_run` envelope ("replaced by panicbot (owner ruling 2026-11-12)") by
+# static-analysis-gate.yml; panicbot's own row carries the findings. The renderer itself is NOT copied
 # here: it stays in standards and is fetched at the pinned commit and checked
 # against a recorded sha256, the way scripts/kyaml-format.sh is. A copy in this
 # repository would be a second implementation that can drift from the one the
