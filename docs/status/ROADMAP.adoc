@@ -4,20 +4,102 @@
 
 == Current Status
 
-Initial development phase.
+The base is in place. Work is parked (2026-11-12).
+
+The target is the first tier of proof for Chapel programs: no index out of
+bounds, no nil dereference and no division by zero, so that the run-time
+checks can be off. This repository holds the theory for that tier. The Chapel
+front end and the user tool are planned for `hyperpolymath/chancel`.
+
+One Agda module exists: `verification/proofs/agda/Canonry/Core.agda`. The Agda
+MANIFEST lists it as `gated`.
+
+=== What the base proves
+
+The model has integers, strided 1D domains (`{lo..hi by stride}`), integer and
+Boolean expressions with `select`, stores, and six statements: `skip`,
+`assign`, `arrRd`, `arrWr`, `seq` and `ifS`.
+
+* `substA-sound`, `substB-sound`, `substArrA-sound`, `substArrB-sound`:
+  substitution in a condition agrees with the update of the store.
+* `wp-progress-safe`, and its instance `vc-progress-safe`: if `wp Δ s Q` is
+  true in a store, then `s` is `skip` and `Q` is true, or the configuration
+  takes one step and the condition of the remaining statement is true in the
+  new store.
+* An `arrRd` or `arrWr` statement has a step only when its index is in the
+  domain of the array. So a true condition means that the next array
+  statement is in bounds.
+
+=== What the base does not prove
+
+. A full run. The theorem is about one step, and `Step` is not proved
+  deterministic.
+. Loops. The module has no loop statement.
+. Bounds of `select` inside an expression. Only the two array statements have
+  a check.
+. Division, the 64-bit range, nil, procedures, n-D domains and symbolic domain
+  bounds.
+. Any relation to Chapel, or to a condition generator in code.
+
+=== Evidence
+
+* Invocation: `agda --safe --without-K --cubical-compatible`, with
+  `--double-check` in the module. Agda 2.6.3, no library, no warning.
+* `scripts/check-proofs.sh agda` passed in a local run on 2026-11-12.
+* The pinned estate checker did not run the module. There is no receipt, no
+  Rocq leg and no Lean leg, so the claim has no PWG grade.
 
 == Milestones
 
-=== v0.1.0 - Foundation
-* [ ] Core functionality
-* [ ] Basic documentation
-* [ ] CI/CD pipeline
+=== M0 - Base
 
-=== v1.0.0 - Stable Release
-* [ ] Full feature set
-* [ ] Comprehensive tests
-* [ ] Production ready
+* [x] Model, substitution lemmas and the one-step theorem for straight-line
+  statements
 
-== Future Directions
+=== M1 - From one step to a safety statement
 
-_To be determined based on community feedback._
+* [ ] `Step` is deterministic
+* [ ] No reachable configuration is stuck (theorem about a full run)
+* [ ] Definedness conditions for expressions. One mechanism gives `select`
+  bounds, division by zero and the 64-bit range.
+
+=== M2 - Loops
+
+* [ ] Conditions in two parts: a precondition for the start store, and side
+  conditions that are valid for all stores
+* [ ] Loop rule without an invariant, for the common case: the index is a free
+  variable under `i ∈ D`
+* [ ] Loop rule with an invariant: entry, step
+  (`inv(k) ∧ k ≤ hi ⟹ wp body inv(k + stride)`) and exit
+* [ ] Loop semantics where the body stays in the continuation
+* [ ] Symbolic domain bounds
+
+=== M3 - Recheck and receipts
+
+* [ ] Rocq leg and Lean leg, with reconciled statements (PROOF-POLICY)
+* [ ] Receipt from the pinned checker for the exact commit
+* [ ] Row in `docs/status/PROOF-STATUS.adoc`
+
+=== M4 - The rest of the first tier
+
+* [ ] nil checks, n-D domains and procedure boundaries
+* [ ] A stated relation between `genVC` here and the generator in code
+
+== Refuted draft: do not restore
+
+A draft of this module had a loop statement `forDom` and a theorem for all
+statements. That theorem is false. Two closed counterexamples checked in
+Agda 2.6.3 on 2026-11-12, in a scratch run that is not in this repository:
+
+* `for i in 0..1 { skip }` with the postcondition `false`: the draft condition
+  is true.
+* `for i in 0..2 { skip }` with `nextInv = (i ≤ 1)` and the postcondition
+  `true`: the draft condition is true, and the next configuration fails it.
+
+The draft rule examined two iterations at most, and its step rule continued
+with an empty body. M2 replaces both.
+
+== Later tiers
+
+Locality of array accesses, freedom from deadlock, functional correctness and
+numeric error bounds come after the first tier. They have no work here yet.

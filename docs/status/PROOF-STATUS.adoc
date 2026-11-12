@@ -46,7 +46,7 @@ them.
 |===
 | ID | Claim (and the artefact that proves or tests it) | Token | PWG | Rocq leg | Lean leg | Receipt
 
-| — | No claims yet | — | — | — | — | —
+| CAN-1 | One-step wp theorem for straight-line statements: `wp-progress-safe` and `vc-progress-safe` in `verification/proofs/agda/Canonry/Core.agda`. Local gate run only (Agda 2.6.3, 2026-11-12). | `proven` | `ungraded` | none | none | none
 |===
 
 == Trust boundary
