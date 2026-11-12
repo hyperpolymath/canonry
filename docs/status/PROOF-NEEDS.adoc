@@ -103,7 +103,7 @@ wins. `verification/proofs/README.adoc` maps it onto this tree.
 |===
 
 Grades are §8 Proof Witness Grades (`PWG-3` … `PWG-1`), recorded per claim in
-`PROOF-STATUS.adoc` and derived from receipts.
+`docs/status/PROOF-STATUS.adoc` and derived from receipts.
 
 == Proof File Locations
 
@@ -125,6 +125,6 @@ verification/proofs/
 == References
 
 * Master list: `~/Desktop/PROOF-REQUIREMENTS-MASTER.adoc`
-* Proof status tracking: `PROOF-STATUS.adoc` (this repo)
+* Proof status tracking: `docs/status/PROOF-STATUS.adoc` (this repo)
 * Proven library: `proven` repo (Idris2 verified foundations)
 * Template: `rsr-template-repo/docs/status/PROOF-NEEDS.adoc`
