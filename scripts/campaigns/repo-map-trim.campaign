@@ -24,6 +24,6 @@
 # `just repo-map` in the same commit, which a campaign cannot do.
 [meta]
 name        = chore/rsr-repo-map-trim
-description = keep allowlist comments whole in the repository map (rsr-template-repo PR 316)
+description = keep allowlist comments whole in the repository map (canonry PR 316)
 [paths]
 scripts/gen-repo-map.sh

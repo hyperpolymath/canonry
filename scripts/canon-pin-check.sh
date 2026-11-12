@@ -53,7 +53,7 @@ set -euo pipefail
 
 usage() { sed -n '36,50p' "$0" >&2; exit 2; }
 
-# The spine's repository id (hyperpolymath/rsr-template-repo). An id, not a
+# The spine's repository id (hyperpolymath/canonry). An id, not a
 # slug: a slug changes on a transfer, an id does not.
 SPINE_REPOSITORY_ID=1306804488
 
