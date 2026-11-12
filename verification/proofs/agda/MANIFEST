@@ -4,3 +4,4 @@
 # PROOF-POLICY §2.1 invocation, agda --safe --without-K --cubical-compatible
 # (Agda 2.6.3, standard library 1.7.3).
 verification/proofs/agda|Properties.agda|gated| compiles under `agda --safe --without-K --cubical-compatible`
+verification/proofs/agda|Canonry/Core.agda|gated| one-step wp theorem for straight-line statements; no library; checks under the same invocation (Agda 2.6.3, 2026-11-12)
