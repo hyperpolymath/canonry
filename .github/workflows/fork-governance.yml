@@ -18,10 +18,12 @@
 #                                                     (Hypatia JSON, relativised;
 #                                                      SARIF `category: hypatia`)
 #        .github/workflows/static-analysis-gate.yml -> artifact `static-analysis-findings`
-#                                                     (panic-attack and pons status
-#                                                      envelopes, patch bridge, unified)
-#      A producer states its own gate. Hypatia gates on critical; panic-attack
-#      gates on critical; pons is advisory. No other workflow repeats those
+#                                                     (a panic-attack `not_run` envelope,
+#                                                      the pons status envelope, patch
+#                                                      bridge, unified)
+#      A producer states its own gate. Hypatia gates on critical; pons is
+#      advisory; the direct panic-attack scan is gone (owner ruling 2026-11-12:
+#      panicbot, run by the `fleet` job below, replaces it). No other workflow repeats those
 #      decisions: this file never fails on a finding, so a pull request cannot be
 #      blocked twice for one finding, and no gate is suppressed here either —
 #      the producer's own check still goes red.
@@ -207,12 +209,13 @@ jobs:
     env:
       # hyperpolymath/gitbot-fleet commit whose driver and adapters run.
       FLEET_REF: e44af8144789594fcce891ccc7b77fc9a464a520
-      # panic-attack commit for panicbot. Deliberately the SAME commit
-      # static-analysis-gate.yml builds: panicbot is not enrolled today (the
-      # grid's own panic-attack row already grades that scanner, so a second
-      # row would report one tool twice), and if it ever is, both rows must
-      # describe the same binary or the grid would compare two tools and call
-      # it one. The standards Hypatia reusable pins b689a74 for its own row;
+      # panic-attack commit for panicbot, which is enrolled (owner ruling
+      # 2026-11-12) and replaces the direct panic-attack scan that
+      # static-analysis-gate.yml used to run. Deliberately the SAME commit
+      # static-analysis-gate.yml still builds for patch-bridge triage, so one
+      # tool has one pin in this repository and the grid never compares two
+      # binaries and calls it one. The standards Hypatia reusable pins b689a74
+      # for its own row;
       # scripts/check-workflow-edges.sh reports that divergence rather than
       # letting it hide.
       PANIC_ATTACK_SHA: b5530834a839734d1d181bfe6edb0d43d4233cf4
@@ -487,7 +490,7 @@ jobs:
             echo ""
             echo "The grid itself is in the \`verdict-grid\` artifact and, on a pull request, in the"
             echo "comment maintained by verdict-grid-publish.yml. A grid state of red or purple is reporting: Hypatia"
-            echo "and panic-attack gate on critical in their own workflows."
+            echo "gates on critical in its own workflow; panic-attack findings are panicbot's fleet row."
           } >> "$GITHUB_STEP_SUMMARY"
           failed=""
           [ "$DEED_RESULT" = "success" ] || failed="${failed} deed=${DEED_RESULT}"

@@ -268,9 +268,10 @@ for report in "$REPORTER" "$PUBLISHER"; do
 done
 
 # ── 4. no tool pinned at two commits in this repository ────────────────────
-# panic-attack is pinned once for its scan and once for patch-bridge triage; the
-# pair must agree, which is why both use env.PANIC_ATTACK_SHA. A literal second
-# pin in another workflow is the clash this catches.
+# panic-attack is pinned for patch-bridge triage (static-analysis-gate.yml) and
+# for panicbot (fork-governance.yml's fleet job, owner ruling 2026-11-12); the
+# pair must agree. A literal second pin in another workflow is the clash this
+# catches.
 pins_file="$(mktemp)"
 trap 'rm -rf "$names_file" "$pins_file" "$reusable_cache"' EXIT
 for wf in "$WORKFLOWS_DIR"/*.yml "$WORKFLOWS_DIR"/*.yaml; do

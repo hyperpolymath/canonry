@@ -122,12 +122,14 @@ duplicate-pin scan).
 with the reason "leave it to the Hypatia lane's direct panic-attack row" — and
 no such row existed, in any workflow.
 
-*Rule.* A scanner gets one row. panic-attack is graded by the grid's own
-`panic-attack assail` row from `static-analysis-gate.yml` evidence, so
-enrolling `panicbot` would report one scanner twice and produce two rows that can
-disagree. `panicbot` stays unenrolled, and its enrolment reason now says *that*.
-The grid now does render the direct row, so the cross-reference is no longer a
-promise about the future.
+*Rule.* A scanner gets one row. Owner ruling 2026-11-12: panicbot replaces the
+direct `panic-attack assail` scan. `static-analysis-gate.yml` no longer runs
+that scan and writes an explicit `not_run` envelope for panic-attack (reason
+"replaced by panicbot (owner ruling 2026-11-12)"), so the grid shows that row
+orange with the reason and never clean from missing evidence. `panicbot` is
+enrolled in `.gitbot-fleet/enrolment.json` and carries the panic-attack
+findings. panic-attack is still built at the one pinned commit, for patch-bridge
+triage and for panicbot.
 
 *Enforced by.* The enrolment manifest's own wording (checked for shape by
 `scripts/verdict-grid-lane.sh validate --enrolment`) and the grid spec's

@@ -23,21 +23,14 @@ extract_step() {
         END { if (!lines) exit 1 }
     ' "$1" > "$3" || fail "cannot find workflow step: $2"
 }
-extract_step "$REPO_DIR/.github/workflows/static-analysis-gate.yml" 'Run panic-attack assail' "$WORK/panic.sh"
+extract_step "$REPO_DIR/.github/workflows/static-analysis-gate.yml" 'Record that panic-attack assail is replaced by panicbot' "$WORK/panic.sh"
 extract_step "$REPO_DIR/.github/workflows/static-analysis-gate.yml" 'Run pons-asinorum deep recon audit' "$WORK/pons.sh"
 extract_step "$REPO_DIR/.github/workflows/verdict-grid-publish.yml" 'Authenticate source run and identify current pull request' "$WORK/authenticate.sh"
 
 # Exported functions shadow external tools even when the machine happens to
 # have a real scanner installed. Validate argv so changed invocations fail.
-panic-attack() {
-    [[ "$#" == 4 && "$1" == assail && "$2" == . && "$3" == --output ]] || return 99
-    case "$SCANNER_MODE" in
-        missing) return 0 ;;
-        empty) : > "$4" ;;
-        *) cp "$SCANNER_REPORT" "$4" ;;
-    esac
-    return "$SCANNER_EXIT"
-}
+# panic-attack is shadowed to fail loudly: the replaced scan must not run it.
+panic-attack() { return 99; }
 pons() {
     if [[ "$#" == 1 && "$1" == --version ]]; then echo 'synthetic pons'; return 0; fi
     [[ "$#" == 4 && "$1" == scan && "$2" == --format && "$3" == json && "$4" == . ]] || return 99
@@ -76,15 +69,24 @@ scanner_case() {
     echo "PASS: $tool/$mode emits $status and preserves the exit code"
 }
 
-scanner_case panic clean '{"weak_points":[]}' 0 0 ran
-scanner_case panic mixed '{"weak_points":[{"severity":"CRITICAL","suppressed":true},{"severity":"HIGH"},{"severity":"warn"},{"severity":"low"},{"description":"no severity"}]}' 0 0 ran
-printf 'total=4\ncritical=0\nhigh=1\nmedium=1\nlow=1\n' > "$WORK/expected-counts"
-cmp -s "$WORK/expected-counts" "$WORK/panic-mixed/output" || fail 'panic counts must normalize case and exclude suppressed findings'
-scanner_case panic nonzero '{"weak_points":[]}' 7 1 error
-scanner_case panic missing '{}' 0 1 error
-scanner_case panic empty '{}' 0 1 error
-scanner_case panic malformed '{broken' 0 1 error
-scanner_case panic wrong-shape '{"weak_points":{}}' 0 1 error
+# panic-attack assail was replaced by panicbot (owner ruling 2026-11-12): the
+# gate step must write an explicit not_run envelope, run no scanner, and emit
+# no success counts, so the grid can never read missing evidence as clean.
+mkdir -p "$WORK/panic-replaced/temp"; : > "$WORK/panic-replaced/summary"
+(
+    cd "$WORK/panic-replaced"
+    RUNNER_TEMP="$WORK/panic-replaced/temp" GITHUB_STEP_SUMMARY="$WORK/panic-replaced/summary" \
+        GITHUB_OUTPUT="$WORK/panic-replaced/output" bash "$WORK/panic.sh"
+) > "$WORK/panic-replaced/log" 2>&1 || { cat "$WORK/panic-replaced/log" >&2; fail "panic/replaced: step failed"; }
+jq -e '.status == "not_run" and .tool == "panic-attack" and .ref == null and .exit_code == null
+       and .report == null and .reason == "replaced by panicbot (owner ruling 2026-11-12)"' \
+    "$WORK/panic-replaced/panic-attack-findings.json" >/dev/null || fail "panic/replaced: dishonest envelope"
+[[ ! -e "$WORK/panic-replaced/output" ]] || fail "panic/replaced: a replaced scanner emitted outputs"
+echo "PASS: panic/replaced emits an explicit not_run envelope naming panicbot"
+bash "$REPO_DIR/scripts/verdict-grid-lane.sh" validate --panic "$WORK/panic-replaced/panic-attack-findings.json" \
+    > "$WORK/panic-replaced/validate.log" 2>&1 || { cat "$WORK/panic-replaced/validate.log" >&2; fail "panic/replaced: lane validate rejects the envelope"; }
+! grep -qi "warn" "$WORK/panic-replaced/validate.log" || fail "panic/replaced: lane validate warns about the envelope"
+echo "PASS: panic/replaced envelope satisfies the lane's validate"
 
 scanner_case pons clean '{"findings":[]}' 0 0 ran
 scanner_case pons mixed '{"findings":[{"severity":"error","evidence":"SPECULATIVE"},{"severity":"ERROR","evidence":"speculative"},{"severity":"error","evidence":"proven"},{"severity":"ERROR"},{"severity":"warn"},{"severity":"info"}]}' 0 0 ran
