@@ -122,7 +122,7 @@ expect 2 "pending mode without :proposed-by is malformed" bash "$check" pending 
 
 # The real deed against a lock built from its own pins: the reader agrees
 # with the deed this repository ships.
-real="$root/rsr-template-repo_chora.deed"
+real="$root/canonry_chora.deed"
 v="$(bash "$root/scripts/deed-field.sh" "$real" canon version)"
 c="$(bash "$root/scripts/deed-field.sh" "$real" canon criteria-sha256)"
 g="$(bash "$root/scripts/deed-field.sh" "$real" canon gates-sha256)"

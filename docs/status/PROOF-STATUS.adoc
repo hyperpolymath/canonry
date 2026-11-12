@@ -2,7 +2,7 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Template: rsr-template-repo/docs/status/PROOF-STATUS.adoc
 // The per-claim proof record. Obligations are in PROOF-NEEDS.adoc.
-= Proof Status — {{PROJECT}}
+= Proof Status — CANONRY
 
 This is the repository's proof-status file in the sense of
 `standards/3-practice/PROOF-POLICY.adoc` §8.5: one row per claim, with its status
