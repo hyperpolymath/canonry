@@ -63,7 +63,7 @@ activated in your shell (`eval "$(mise activate bash)"`, or your shell's
 equivalent), plain `just` works and the prefix can be dropped.
 
 `just repo-init` prompts for the project name, owner, author, licence contact, and the
-other values listed in `.machine_readable/ai/PLACEHOLDERS.adoc`, substitutes them
+other values it lists, substitutes them
 across the tree, validates the result, and (if available) runs the `k9-svc` checks.
 
 [[ai-install]]
@@ -91,8 +91,7 @@ result with `just doctor`.
 === What you will be asked
 
 . Your operating system (Linux, macOS, or Windows via WSL2).
-. The new project's name, owner, author and licence contact (the values listed in
-  `.machine_readable/ai/PLACEHOLDERS.adoc`).
+. The new project's name, owner, author and licence contact (the values `just repo-init` prompts for).
 . To confirm the privacy notice below.
 
 === Privacy and security
@@ -200,7 +199,6 @@ The short version:
 * link:docs/AFFIRMATION.adoc[AFFIRMATION] — the dated, signed honesty snapshot of the repo's true state.
 * link:docs/AUDIT.adoc[AUDIT] — the release audit gate.
 * link:docs/AI_INSTALLATION_GUIDE.adoc[AI installation guide] — for agents instantiating this template.
-* link:.machine_readable/ai/PLACEHOLDERS.adoc[PLACEHOLDERS] — the full placeholder reference.
 
 == Licence
 

@@ -1103,7 +1103,7 @@
     ; Files a minted repo owns from birth are (paths :diverged …).
     (paths
       :added ("verification/proofs/agda/Canonry/Core.agda")
-      :removed ("archetypes/" "build/docs-seed/" "build/templates/" "rsr-template-repo_chora.deed")
+      :removed ("archetypes/" "build/docs-seed/" "build/templates/" "rsr-template-repo_chora.deed" ".machine_readable/ai/PLACEHOLDERS.adoc")
       :diverged ("canonry_chora.deed" "docs/status/ROADMAP.adoc" "CLAUDE.md" "docs/architecture/REPOSITORY-MAP.adoc" "verification/proofs/agda/MANIFEST")))
   ; provenance — what this repo was minted FROM. Written once, at mint,
   ; by build/just/repo-init.just. Tools that want "what is this repo" read
