@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Canonry: plan to v1.0.0
+:revdate: 2026-11-15
+:toc:
+
+Canonry is the Agda theory for the first tier of proof for Chapel array
+programs. This plan is the execution layer. The milestones M0 to M4, the
+theorem names and the refuted loop draft stay in
+link:../status/ROADMAP.adoc[the roadmap]. This file adds the v1.0.0 gates, the
+order, the models and the effort.
+
+Canonry and `hyperpolymath/chancel` are a pair. Canonry holds the theory.
+Chancel is the planned Chapel front end. The two follow one schedule.
+
+The work that is shared with the sibling verifiers (`atoma`, `quintessence`,
+`Apodeixis.jl`, `bactrian`, `chancel`) is in the family plan,
+`docs/plan/FAMILY-ULTRAPLAN.adoc` in `hyperpolymath/atoma`. IDs F1 to F12 and
+waves W0 to W5 come from that plan.
+
+== Measured state on 2026-11-15
+
+Tools: Agda 2.6.3, standard library 1.7.3 (only the sample module imports it).
+
+* `bash scripts/check-proofs.sh agda`: `Canonry/Core.agda` PASS and
+  `Properties.agda` PASS, under `agda --safe --without-K --cubical-compatible`.
+* `Canonry/Core.agda`: 552 lines, no library import, 0 postulates.
+* Claim CAN-1 in `docs/status/PROOF-STATUS.adoc` is `proven` and `ungraded`.
+  No receipt, no Rocq leg and no Lean leg exist.
+* New today: `.github/workflows/canonry.yml` runs the proof gate.
+
+== Definition of v1.0.0
+
+Canonry is a theory library. Proof Witness Grades apply to it. The seven
+verifier gates of the family plan apply to `chancel`, not to Canonry.
+
+[cols="1,4,3",options="header"]
+|===
+| Gate | Acceptance | Falsifier
+| Theory scope | M1, M2 and M4 are proved: full-run safety, definedness conditions, loops with and without an invariant, symbolic bounds, nil, n-D domains, procedure boundaries. | A closed counterexample to a stated theorem checks in Agda.
+| No escape | 0 postulates, 0 holes, `--safe`, in the whole import cone. | A postulate or a hole is in the cone.
+| Recheck | Each stated theorem has a Rocq leg and a Lean leg with reconciled statements. | A leg proves a weaker statement.
+| Receipts | A receipt from the pinned checker exists for the release commit. The grade in `PROOF-STATUS.adoc` is derived from it. | A grade is written with no receipt.
+| Generator relation | The relation between `genVC` in the theory and the generator in `chancel` is stated and checked. | The generator emits a condition that the theory does not cover.
+| Release and estate | Deed identity set. README and changelog true. | A claim names a property that the roadmap lists as not proved.
+|===
+
+Target grade at v1.0.0: `PWG-2ii` for each stated theorem. `PWG-1` needs
+per-commit receipts from a pinned headless checker. Decide that target when
+the estate checker is available to this repository.
+
+== Sequence
+
+[cols="1,4,1,1,3",options="header"]
+|===
+| Stage | Work | Lead | Size | Exit evidence
+| C0 Truth (W0) | Done: README, proof gate in CI, ignore rule. Left: deed identity (F2), remove or replace the template sample proofs. | Owner; Haiku | S | The CI gate is green on `main`.
+| C1 Receipt for the base (W1, F11) | Receipt for CAN-1 from the pinned checker. Grade `PWG-3`. | Sonnet | S | A receipt file for the exact commit, and the derived grade.
+| C2 M1: full-run safety (W2) | `Step` deterministic. No reachable configuration is stuck. Definedness conditions. Fix the obligation format that `chancel` will emit. | Opus | M | The M1 theorems check. One straight-line Chapel statement maps to one obligation.
+| C3 M2: loops (W3) | The two-part conditions, both loop rules, the loop semantics, symbolic bounds. Test each rule against the two refuted counterexamples first. | Opus, advisor review of the loop rule statement | L | The M2 theorems check. Both counterexamples are rejected by the new rule.
+| C4 M3: legs (W4, F11) | Rocq leg and Lean leg for M0 to M2, statements reconciled. | Opus | L | Grade `PWG-2ii` derived from receipts.
+| C5 M4 and release (W4, W5) | nil, n-D domains, procedures, the generator relation with `chancel`. Release audit (F12). | Opus; Sonnet for release | L | All gates pass on the release commit.
+|===
+
+Proof work is Opus work. Sonnet does the receipt tooling and the CI. Haiku
+does the scout pass and the status files. The advisor reviews each theorem
+statement before the proof effort starts, and each grade change.
+
+== Use of the ECHIDNA coprocessor
+
+Strided domains need exact `gcd` and `lcm` for alignment. A coprocessor can
+search for counterexamples to a draft rule before a proof attempt. The refuted
+loop draft shows the value of that step. The coprocessor has no external entry
+point today (family plan, F10). Until it has one, use small closed
+counterexamples in Agda, as the roadmap did.
+
+== Stop points
+
+* Do not restore the refuted loop draft.
+* If a loop rule fails one of the two recorded counterexamples, stop and
+  change the rule. Do not weaken the theorem.
+* A leg that needs a postulate is not a leg. Record it as an open obligation.
