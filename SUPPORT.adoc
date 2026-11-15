@@ -1,7 +1,7 @@
-# Support
+= Support
 
 For questions, help, and community discussion:
 
-- GitHub Discussions: https://github.com/hyperpolymath/canonry/discussions
-- GitHub Issues: https://github.com/hyperpolymath/canonry/issues
-- Documentation: See README.adoc in the root directory.
+* GitHub Discussions: https://github.com/hyperpolymath/canonry/discussions
+* GitHub Issues: https://github.com/hyperpolymath/canonry/issues
+* Documentation: See `README.adoc` in the root directory.

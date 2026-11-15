@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-// Template: rsr-template-repo/docs/status/PROOF-NEEDS.adoc
-// Authoritative master list: ~/Desktop/PROOF-REQUIREMENTS-MASTER.adoc
 = Proof Requirements — CANONRY
 
 == Proof Tier
@@ -25,6 +23,10 @@
 |===
 
 == Mandatory Proofs (All RSR Repos)
+
+NOTE: The two tables below come from the repository template. Canonry has no
+Idris2 or Zig code of its own, so these rows are not assessed for this
+repository. The Canonry proofs are Agda: see `docs/status/PROOF-STATUS.adoc`.
 
 These proofs are inherited from the RSR template spine and MUST be present in every repo.
 (Name no repository here: the mint's self-name pass rewrites the template's
@@ -124,7 +126,5 @@ verification/proofs/
 
 == References
 
-* Master list: `~/Desktop/PROOF-REQUIREMENTS-MASTER.adoc`
 * Proof status tracking: `docs/status/PROOF-STATUS.adoc` (this repo)
 * Proven library: `proven` repo (Idris2 verified foundations)
-* Template: `rsr-template-repo/docs/status/PROOF-NEEDS.adoc`
