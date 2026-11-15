@@ -1,0 +1,38 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Runs the Agda proof check for the modules in verification/proofs/agda/MANIFEST.
+# The toolchain profile is pinned in scripts/canonry-ci-toolchain.sh.
+name: Canonry proofs
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  canonry-proof-gate:
+    name: Canonry proof gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Provision Agda and the standard library
+        run: bash scripts/canonry-ci-toolchain.sh
+      - name: Check the Agda proofs
+        run: bash scripts/check-proofs.sh agda
+      - name: Fail if the check left files in the work tree
+        run: |
+          status="$(git status --porcelain)"
+          if [ -n "${status}" ]; then
+            echo "Build products must be ignored. Untracked or changed files:" >&2
+            echo "${status}" >&2
+            exit 1
+          fi

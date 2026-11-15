@@ -144,5 +144,5 @@ verification/proofs/coq/*.vos
 verification/proofs/coq/*.glob
 verification/proofs/coq/.*.aux
 # Agda compiled proof artifacts
-verification/proofs/agda/*.agdai
+verification/proofs/agda/**/*.agdai
 
