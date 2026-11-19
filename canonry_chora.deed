@@ -125,7 +125,7 @@
     :project "canonry"
     :ecosystem "hyperpolymath"
     :position-type "theory-library"
-    :purpose "Agda theory for the verification of Chapel array programs: a strided-domain calculus and a weakest-precondition core. One checked module today: a one-step theorem for straight-line statements."
+    :purpose "Agda theory for the verification of Chapel array programs: a strided-domain calculus and a weakest-precondition core. One module today, ungraded (no proof receipt yet): a one-step theorem for straight-line statements."
     :not ("a Chapel verifier or front end (that is hyperpolymath/chancel)" "a proof about loops, procedures or full runs yet" "a graded proof: no receipt and no Rocq or Lean leg yet" "a repository template")
     :pipeline-position "theory"
     :chain "Canonry theorems (Agda) -> Chancel obligations (planned) -> ECHIDNA prove and independent kernel check (planned)"
