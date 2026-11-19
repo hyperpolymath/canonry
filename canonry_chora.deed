@@ -124,11 +124,11 @@
   (ecosystem
     :project "canonry"
     :ecosystem "hyperpolymath"
-    :position-type "UNASSIGNED"
-    :purpose "UNASSIGNED"
-    :not ()
-    :pipeline-position "UNASSIGNED"
-    :chain "UNASSIGNED"
+    :position-type "theory-library"
+    :purpose "Agda theory for the verification of Chapel array programs: a strided-domain calculus and a weakest-precondition core. One module today, ungraded (no proof receipt yet): a one-step theorem for straight-line statements."
+    :not ("a Chapel verifier or front end (that is hyperpolymath/chancel)" "a proof about loops, procedures or full runs yet" "a graded proof: no receipt and no Rocq or Lean leg yet" "a repository template")
+    :pipeline-position "theory"
+    :chain "Canonry theorems (Agda) -> Chancel obligations (planned) -> ECHIDNA prove and independent kernel check (planned)"
     :coordination standards
     (related :name "rsr-template-repo" :relationship minted-from :notes "the template this repo was minted from by just repo-init"))
   ; <<< repo-identity
@@ -197,7 +197,7 @@
     :version "0.1.0"
     :last-updated "2026-11-12"
     :project "Canonry"
-    :purpose "Canonical RSR (Rhodium Standard Repository) template — governance, CI/CD, machine-readable metadata, ABI/FFI seam and formal-verification scaffolding that hyperpolymath projects are instantiated from."
+    :purpose "Agda theory for the verification of Chapel array programs."
     (agent :name CLAUDE :role "proofs, compilers, repo-local implementation, CI/CD, formal verification, Rust/Idris2/Zig")
     (agent :name CHATGPT :role "prose, papers, publication review, standards docs, outreach drafts, letters")
     (agent :name GEMINI :role "estate audits, cross-repo sweeps, long-context triage, pattern detection")
