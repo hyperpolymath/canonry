@@ -5,11 +5,10 @@
 # The root Justfile delegates build/test to `provision::` recipes that need
 # `just`, mise and per-language toolchains the umbrella does not provide, and
 # `just test-smoke` exits 1 by design ("not wired yet"). So the real, runnable
-# tests here (the shell suites under tests/) are declared explicitly. Their
-# runner skips the suites listed in each command: in a runner-like environment
-# (plain PATH, no just/nickel/zig 0.16/julia/asciidoctor/ijson-jcs) those suites
-# failed when run locally. They were not individually diagnosed; they are
-# listed so the gap is visible, and are asked of the umbrella owner in the PR.
+# tests here (the shell suites under tests/) are declared explicitly. Every suite runs
+# except four that were diagnosed and fail for a named, real reason; each is a
+# visible, time-boxed per-suite waiver printed in the log and enforced by date in the
+# command (the manifest waiver is per category, so a per-suite one is expressed here).
 schema = "proven/manifest/v1"
 
 # ---- languages with no umbrella runner in release 0.1 ------------------------
@@ -54,17 +53,20 @@ na = "src/interface/ffi is a single FFI skeleton with no inter-component seam; t
 [categories.unit.shell]
 command = '''
 set -uo pipefail
-fail=0; ran=0
+fail=0; ran=0; waived=0
+waive() { # suite, symptom: visible, expires 2027-01-15
+  if [ "$(date -u +%F)" \> "2027-01-15" ]; then echo "WAIVER EXPIRED: $1 ($2)"; fail=1; return; fi
+  echo "WAIVED until 2027-01-15: $1 -- $2"; waived=$((waived+1))
+}
 for t in tests/workflows/*_test.sh tests/shape/*_test.sh tests/invisible-characters-test.sh; do
   case "$t" in
-    */check_adoc_renders_test.sh|*/check_ijson_jcs_test.sh|*/coaptation_families_test.sh|*/dependabot_automerge_test.sh|*/devcontainer_test.sh|*/governance_policy_test.sh|*/julia_library_test.sh) continue ;;
-    */k9_typecheck_test.sh|*/kyaml_format_test.sh|*/kyaml_ratchet_test.sh|*/mint_cleanup_test.sh|*/non_interactive_mint_test.sh) continue ;;
-    */rhodibot_canary_test.sh|*/session_contracts_test.sh|*/squabble_gate_test.sh) continue ;;
+    */check_adoc_renders_test.sh) waive "$t" "asciidoctor not installed on the runner; the suite fails closed (gem install asciidoctor -v 2.0.26)"; continue ;;
+    */julia_library_test.sh) waive "$t" "archetypes/julia-library/overlay/Project.toml.in is missing from the repo (sed: can't read); fails rc=2"; continue ;;
   esac
   echo "== $t"; ran=$((ran+1))
   bash "$t" || { echo "FAILED: $t"; fail=1; }
 done
-echo "ran $ran suites"
+echo "ran $ran suites, waived $waived"
 exit $fail
 '''
 
@@ -79,15 +81,20 @@ na = "interpreted scripts, nothing to compile"
 [categories.p2p.shell]
 command = '''
 set -uo pipefail
-fail=0; ran=0
+fail=0; ran=0; waived=0
+waive() {
+  if [ "$(date -u +%F)" \> "2027-01-15" ]; then echo "WAIVER EXPIRED: $1 ($2)"; fail=1; return; fi
+  echo "WAIVED until 2027-01-15: $1 -- $2"; waived=$((waived+1))
+}
 for t in tests/e2e/*_test.sh; do
   case "$t" in
-    */chain_mint_test.sh|*/julia_fmt_test.sh) continue ;;
+    */chain_mint_test.sh) waive "$t" "uuidgen not installed on the runner; the suite fails closed (FAIL: uuidgen is required to run a real mint)"; continue ;;
+    */julia_fmt_test.sh) waive "$t" "Julia not provisioned by umbrella 0.1; the suite fails closed (FAIL: Julia is required)"; continue ;;
   esac
   echo "== $t"; ran=$((ran+1))
   bash "$t" || { echo "FAILED: $t"; fail=1; }
 done
-echo "ran $ran suites"
+echo "ran $ran suites, waived $waived"
 exit $fail
 '''
 
